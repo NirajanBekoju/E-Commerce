@@ -1,0 +1,102 @@
+{% extends 'shop/template.html' %}
+{% block title %}
+  Hope Page
+{% endblock %}
+
+<!-- loading the static files -->
+{% load static %}
+
+
+{% block content %}
+<!-- Owl Carousel -->
+{% for items_list in products %}
+<h3 class="headingsss">{{ items_list.0.category }}</h3>
+<div class="owl-carousel owl-theme p-2">
+  {% for product in items_list %}
+      <div class="item p-2">
+          <div class="card" style="width: 18rem; height: 500px;">
+            <img src="/media/{{product.image}}" class="card-img-top" alt="..." height="200">
+            <div class="card-body">
+              <h5 class="card-title mb-1">{{ product.product_name }}</h5>
+              <p class="card-text mb-1">
+                {{ product.product_description|slice:'0:50' }}...
+              </p>
+              <span class="font-weight-bold">Category: </span><span>{{ product.category }}</span><br>
+              <span class="font-weight-bold">Sub-Category: </span><span>{{ product.sub_category }}</span><br>
+              <span class="font-weight-bold">Price: </span><span>{{ product.price }}</span><br>
+              <div id="asdfpr{{product.id}}">
+                <a class="btn btn-primary addToCart text-white" id="pr{{product.id}}">
+                    Add to the Cart
+                </a>
+              </div>  
+              <br>
+              <a href="/shop/product/{{ product.id }}" class="btn btn-primary my-2">
+                Quick View
+              </a>
+            </div>
+          </div>
+      </div>
+  {% endfor %}
+</div>
+{% endfor %}
+<!-- End of Owl Carousel -->
+{% endblock %} 
+
+{% block scriptJs %}
+<script>
+ 
+// A $( document ).ready() block.
+$( document ).ready(function() {
+  // Funtion to change the cart number 
+  // To overwrite the items number
+  function overwrite(){
+    let sum = 0;
+    Object.values(cart).forEach(element => {
+      sum+=element;
+    });
+    document.getElementById("cartDetailLink").innerHTML = sum;
+  }
+
+  // Update Cart Button
+  function updateCartBtn(cart){
+    for(key in cart){
+      let id = '#asdf' + key;
+      console.log(id);
+      $(id).html('apple');
+    }
+  }
+
+  // Search 'Cart' object in the local storage
+  if(localStorage.getItem('cart') == null){
+    var cart = {};
+  }
+  else{
+    cart = JSON.parse(localStorage.getItem('cart'));
+    overwrite();
+  }
+
+  // Event Click Handler Function for "Add to Cart" Button
+  $('.addToCart').click(function(){
+    product_btn_id = this.id.toString();
+    if(cart[product_btn_id] != undefined){
+      cart[product_btn_id] = cart[product_btn_id] + 1;
+    }
+    else{
+      cart[product_btn_id] = 1;
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    console.log(cart);
+    // Function to overwrite in the 'Cart' link in NavBar
+    overwrite();
+    updateCartBtn(cart);
+  });
+});  
+</script>
+{% endblock %}
+
+
+
+
+
+
+ 
