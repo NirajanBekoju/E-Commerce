@@ -1,19 +1,47 @@
 {% extends 'shop/template.html' %}
+<!-- loading the static files -->
+{% load static %}
+{% load blog_tags %}
 {% block title %}
   Hope Page
 {% endblock %}
 
-<!-- loading the static files -->
-{% load static %}
-
-
 {% block content %}
-<!-- Owl Carousel -->
-{% for items_list in products %}
-<h3 class="headingsss">{{ items_list.0.category }}</h3>
-<div class="owl-carousel owl-theme p-2">
-  {% for product in items_list %}
-      <div class="item p-2">
+{% for products in all_products %}
+  <h3 class="my-3">{{products.0.category}}</h3>
+  <div id="carouselExampleControls1{{products.0.id}}" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="row">
+          <div class="col-md-4">
+            <!-- card body -->
+            <div class="card" style="width: 18rem; height: 500px;">
+              <img src="/media/{{products.0.image}}" class="card-img-top" alt="..." height="200">
+              <div class="card-body">
+                <h5 class="card-title mb-1">{{ products.0.product_name }}</h5>
+                <p class="card-text mb-1">
+                  {{ products.0.product_description|slice:'0:50' }}...
+                </p>
+                <span class="font-weight-bold">Category: </span><span>{{ products.0.category }}</span><br>
+                <span class="font-weight-bold">Sub-Category: </span><span>{{ products.0.sub_category }}</span><br>
+                <span class="font-weight-bold">Price: </span><span>{{ products.0.price }}</span><br>
+                <div id="asdfpr{{products.0.id}}">
+                  <a class="btn btn-primary addToCart text-white" id="pr{{products.0.id}}">
+                      Add to the Cart
+                  </a>
+                </div>  
+                <br>
+                <a href="/shop/product/{{ products.0.id }}" class="btn btn-primary my-2">
+                  Quick View
+                </a>
+              </div>
+            </div>
+            <!-- end of card body -->
+          </div>     
+          <!-- end of col-md-3  -->
+      {% for product in products|slice:"1:" %}
+        <div class="col-md-4">
+          <!-- card body -->
           <div class="card" style="width: 18rem; height: 500px;">
             <img src="/media/{{product.image}}" class="card-img-top" alt="..." height="200">
             <div class="card-body">
@@ -35,15 +63,30 @@
               </a>
             </div>
           </div>
-      </div>
-  {% endfor %}
-</div>
+          <!-- end of card body -->
+        </div>
+        {% if forloop.counter|modulo:3 and forloop.counter > 0 and not forloop.last %}
+          </div></div><div class="carousel-item"><div class="row">
+        {% endif %}
+      {% endfor %}
+    </div></div>
+    <a class="carousel-control-prev" href="#carouselExampleControls1{{products.0.id}}" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleControls1{{products.0.id}}" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+  </div>
 {% endfor %}
-<!-- End of Owl Carousel -->
-{% endblock %} 
+{% endblock %}
 
-{% block scriptJs %}
-<script>
+
+
+
+<!-- <script>
  
 // A $( document ).ready() block.
 $( document ).ready(function() {
@@ -92,7 +135,6 @@ $( document ).ready(function() {
   });
 });  
 </script>
-{% endblock %}
 
 
 

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 # importing the Product Class for operation
 from .models import Product, Contact
+import math
 # Create your views here.
 def index(request):
     # print(Product.objects.all())
@@ -10,8 +11,18 @@ def index(request):
     categories = {item['category'] for item in catprods}
     for  category in categories:
         product_list = Product.objects.filter(category = category).order_by('product_pub_date')[::-1]
+        n = len(product_list)
+        nslides = n//4 + math.ceil(n/4 - n//4) 
         all_product.append(product_list)
-    return render(request,'shop/index.html', {'products':all_product})
+
+    # product_list = Product.objects.filter(category = "Clothing").order_by('product_pub_date')[::-1]
+    # n = len(product_list)
+    # nslides = n//4 + math.ceil(n/4 - n//4) 
+    # print(product_list)
+    # dict1 = {'products': product_list, 'nslides':nslides, 'range':range(1,nslides)}
+    dict1 = {'all_products': all_product}
+    print(dict1)
+    return render(request,'shop/index.html', dict1)
 
 def about(request):
     return render(request,'shop/about.html')
