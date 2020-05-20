@@ -3,7 +3,7 @@
 {% load static %}
 {% load blog_tags %}
 {% block title %}
-  Hope Page
+  Home Page
 {% endblock %}
 
 {% block content %}
@@ -13,22 +13,22 @@
     <div class="carousel-inner">
       <div class="carousel-item active">
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-4 d-flex justify-content-center">
             <!-- card body -->
             <div class="card" style="width: 18rem; height: 500px;">
               <img src="/media/{{products.0.image}}" class="card-img-top" alt="..." height="200">
               <div class="card-body">
-                <h5 class="card-title mb-1">{{ products.0.product_name }}</h5>
+                <h5 class="card-title mb-1" id="namepr{{ products.0.id }}">{{ products.0.product_name }}</h5>
                 <p class="card-text mb-1">
                   {{ products.0.product_description|slice:'0:50' }}...
                 </p>
                 <span class="font-weight-bold">Category: </span><span>{{ products.0.category }}</span><br>
                 <span class="font-weight-bold">Sub-Category: </span><span>{{ products.0.sub_category }}</span><br>
                 <span class="font-weight-bold">Price: </span><span>{{ products.0.price }}</span><br>
-                <div id="asdfpr{{products.0.id}}">
-                  <a class="btn btn-primary addToCart text-white" id="pr{{products.0.id}}">
+                <div id="asdfpr{{products.0.id}}" class="asdfpr">
+                  <button class="btn btn-primary addToCart text-white" id="pr{{products.0.id}}">
                       Add to the Cart
-                  </a>
+                  </button>
                 </div>  
                 <br>
                 <a href="/shop/product/{{ products.0.id }}" class="btn btn-primary my-2">
@@ -40,22 +40,22 @@
           </div>     
           <!-- end of col-md-3  -->
       {% for product in products|slice:"1:" %}
-        <div class="col-md-4">
+        <div class="col-md-4 d-flex justify-content-center">
           <!-- card body -->
           <div class="card" style="width: 18rem; height: 500px;">
             <img src="/media/{{product.image}}" class="card-img-top" alt="..." height="200">
             <div class="card-body">
-              <h5 class="card-title mb-1">{{ product.product_name }}</h5>
+              <h5 class="card-title mb-1" id="namepr{{product.id}}">{{ product.product_name }}</h5>
               <p class="card-text mb-1">
                 {{ product.product_description|slice:'0:50' }}...
               </p>
               <span class="font-weight-bold">Category: </span><span>{{ product.category }}</span><br>
               <span class="font-weight-bold">Sub-Category: </span><span>{{ product.sub_category }}</span><br>
               <span class="font-weight-bold">Price: </span><span>{{ product.price }}</span><br>
-              <div id="asdfpr{{product.id}}">
-                <a class="btn btn-primary addToCart text-white" id="pr{{product.id}}">
+              <div id="asdfpr{{product.id}}" class="asdfpr">
+                <button class="btn btn-primary addToCart text-white" id="pr{{product.id}}">
                     Add to the Cart
-                </a>
+                </button>
               </div>  
               <br>
               <a href="/shop/product/{{ product.id }}" class="btn btn-primary my-2">
@@ -85,20 +85,128 @@
 
 
 
+{% block scriptJs %}
+<script>
+  $(document).ready(function(){
+    // Clearing the cart
+    function cartClear(){
+      cart = JSON.parse(localStorage.getItem('cart'));
+      for(key in cart){
+        document.getElementById("asdf" + key).innerHTML = '<button class="btn btn-primary addToCart text-white" id="'+ key +'">Add to the Cart</button>';
+        // Clearing the local Storage
+        localStorage.clear();
+        var cart = {};
+        overwrite();
+      }
+    }
+
+    // Decrementing Function 
+    $('.asdfpr').on("click", "button.decrement",function(){
+      dec_id = this.id.toString().slice(3);
+      if(cart[dec_id][0] > 1){
+        cart[dec_id][0] -= 1;
+      }
+      else{
+        // change div ".asdfpr" into "Add to Cart button"
+        cart[dec_id][0] = 0;
+      }
+      overwrite();
+      updateCartBtn(cart);
+      updateCartPop(cart);
+    });
+
+    // Incrementing Function
+    $('.asdfpr').on("click", "button.increment",function(){
+      dec_id = this.id.toString().slice(3);
+      cart[dec_id][0] += 1;
+      overwrite();
+      updateCartBtn(cart);
+      updateCartPop(cart);
+    });
+
+    // Funtion to change the cart number on Naviagition Bar
+    // To overwrite the items number
+    // Update items in localStorage as well
+    function overwrite(){
+      let sum = 0;
+      // console.log(cart);
+      Object.values(cart).forEach(element => {
+        sum+=element[0];
+      });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      document.getElementById("cartDetailLink").innerHTML = sum;
+    }
+
+    // function to change the "Add to Cart" Button to "Increment and Decrement Button"
+    function updateCartBtn(Cart){
+      for(key in cart){
+        let id = "asdf" + key;
+        document.getElementById(id).innerHTML = "<button id='"+ "dec" + key +"' class='btn btn-primary decrement'>-</button><span id='qty"+ key +"' class='font-weight-bold mx-2'>"+cart[key][0]+"</span><button id='"+ "inc" + key +"' class='btn btn-primary increment'>+</button>";
+      }
+    }
+
+    // Initialization of cart and the script
+    // Search 'Cart' object in the local storage
+    if(localStorage.getItem('cart') == null){
+      var cart = {};
+    }
+    else{
+      cart = JSON.parse(localStorage.getItem('cart'));
+      overwrite();
+      updateCartBtn(cart);
+    }
+
+    // Event Click Handler Function for "Add to Cart" Button
+    $('.addToCart').click(function(){
+      product_btn_id = this.id.toString();
+      if(cart[product_btn_id] != undefined){
+        cart[product_btn_id] = cart[product_btn_id] + 1;
+      }
+      else{
+        // cart[product_btn_id] = 1;
+        var qty = 1;
+        var name_product = document.getElementById('name' + product_btn_id).innerHTML;
+        cart[product_btn_id] = [qty, name_product];
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      // Function to overwrite in the 'Cart' link in NavBar
+      console.log(cart);
+      overwrite();
+      updateCartBtn(cart);
+      updateCartPop(cart);
+    });
+
+    // popover in the Navbar "Cart"
+    $('#cart-popover').popover();
+    document.getElementById('cart-popover').setAttribute('data-content','Hellow');
+    updateCartPop(cart);
+
+    // update the pop cart list
+    function updateCartPop(cart){
+      htmlStr = "<h6>Item List in Cart:</h6><ul class = 'p-2'>";
+      for(key in cart){
+        id_name = "#name" + key;
+        name = $(id_name).text();
+        if(cart[key][0] != 0){
+          htmlStr += "<li>" + name + " (Qty: <b>" + cart[key][0] +"</b>)</li>";
+        }
+      } 
+      htmlStr += "</ul><a href='/shop/checkout' class='btn btn-info text-white mr-2'>Checkout</a><a id='clear-cart' class='clear-cart btn btn-danger text-white' onclick='clearCartPro()'>Clear Cart</a>";
+      $("#cart-popover").attr("data-content",htmlStr);
+    }
+
+    function clearCartPro(){
+      console.log("Clearing");
+    }
+  });
+</script>
+{% endblock %}
 
 <!-- <script>
  
 // A $( document ).ready() block.
 $( document ).ready(function() {
-  // Funtion to change the cart number 
-  // To overwrite the items number
-  function overwrite(){
-    let sum = 0;
-    Object.values(cart).forEach(element => {
-      sum+=element;
-    });
-    document.getElementById("cartDetailLink").innerHTML = sum;
-  }
+  
 
   // Update Cart Button
   function updateCartBtn(cart){
@@ -109,30 +217,9 @@ $( document ).ready(function() {
     }
   }
 
-  // Search 'Cart' object in the local storage
-  if(localStorage.getItem('cart') == null){
-    var cart = {};
-  }
-  else{
-    cart = JSON.parse(localStorage.getItem('cart'));
-    overwrite();
-  }
+  
 
-  // Event Click Handler Function for "Add to Cart" Button
-  $('.addToCart').click(function(){
-    product_btn_id = this.id.toString();
-    if(cart[product_btn_id] != undefined){
-      cart[product_btn_id] = cart[product_btn_id] + 1;
-    }
-    else{
-      cart[product_btn_id] = 1;
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    console.log(cart);
-    // Function to overwrite in the 'Cart' link in NavBar
-    overwrite();
-    updateCartBtn(cart);
-  });
+  
 });  
 </script>
 

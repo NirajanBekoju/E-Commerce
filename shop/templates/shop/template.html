@@ -22,7 +22,15 @@
       background-image: url("{% static 'shop/images/right.png' %}");
     }
     .carousel-control-prev-icon {
-      background-image: url("{% static 'shop/images/left.png' %}");
+        background-image: url("{% static 'shop/images/left.png' %}");
+    }
+    .carousel-control-prev {
+      left: 0px;
+      width: 3%;
+    } 
+    .carousel-control-next {
+        right: 0px;
+        width: 3%;
     }
   </style>
 </head>
@@ -57,8 +65,7 @@
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
-      <button type="button" class="btn btn-primary mx-2" id="cart-popover" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus
-sagittis lacus vel augue laoreet rutrum faucibus.">
+      <button type="button" class="btn btn-primary mx-2" id="cart-popover" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="lacus vel augue laoreet rutrum faucibus.">
         <i class="fa fa-shopping-cart mr-2" aria-hidden="true"></i>
         Cart(<span id="cartDetailLink">0</span>)
       </button>
@@ -75,7 +82,7 @@ sagittis lacus vel augue laoreet rutrum faucibus.">
     
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <!-- Owl Carousel JS -->
@@ -83,9 +90,5 @@ sagittis lacus vel augue laoreet rutrum faucibus.">
 <script src="{% static 'shop/js/owlcarousel.js' %}"></script>
 <!-- script for add to cart -->
 {% block scriptJs %}{% endblock %}
-<script>
-  $('#cart-popover').popover();
-  document.getElementById('cart-popover').setAttribute('data-content','')
-</script>
 </body>
 </html>

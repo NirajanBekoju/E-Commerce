@@ -1,7 +1,113 @@
 {% extends 'shop/template.html' %}
 {% block title %}
-    Checkout
+Checkout - My Awesome Cart
 {% endblock%}
+
 {% block content %}
-    Checkout Page is running
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Step 1: Item List in your Cart</h3>
+            <ul class="list-group" id="items_list">
+                
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 personal-detail" id="personal-detail">
+            <h3 class="my-2">Step 2: Fill Up your Personal Details</h3>
+            <form action="/shop/checkout" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="items_json" id="items_json">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputname">Name</label>
+                        <input type="text" class="form-control" id="inputname" name="name">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" name="email">
+                    </div>  
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputAddress">Address</label>
+                        <input type="text" class="form-control" id="inputAddress" placeholder="Apartment, studio, or floor" name="address">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="phone">Phone Number</label>
+                        <input type="number" name="phone" id="phone" class="form-control">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputCity">City</label>
+                    <input type="text" class="form-control" id="inputCity" name="city">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="inputState">State</label>
+                    <input type="text" class="form-control" id="inputState" name="state">
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="inputZip">Zip</label>
+                    <input type="text" class="form-control" id="inputZip" name="zip_code">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck" name="checkout">
+                    <label class="form-check-label" for="gridCheck">
+                      Check me out
+                    </label>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scriptJs %}
+
+{% if message %}
+    <script>
+        console.log("Apple alle");   
+        alert(`Ordered. You can track us with our tracker Tracker Id:{{order_id}}`);
+        localStorage.clear();
+        window.location = '/shop/';
+    </script>
+{% else %}
+<script>  
+    var cart = JSON.parse(localStorage.getItem('cart'));
+    console.log(cart);
+    // function to overwrite the cart button
+    if(cart != null){
+        overwrite();
+        for(key in cart){
+            if(cart[key][0] !== 0){
+                $('#items_list').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${cart[key][1]}
+                    <span class="badge badge-primary badge-pill">${cart[key][0]}</span>
+                    </li>`);
+            }
+        }
+    }
+    else{
+        $('#items_list').append("<li>No Items In Cart</li>");
+        $('#personal-detail').remove();
+    }
+    // Setting value to hidden input
+    $('#items_json').val(JSON.stringify(cart));
+
+    function overwrite(){
+        let sum = 0
+        Object.values(cart).forEach(element => {
+            sum+=element[0];
+        });
+        document.getElementById('cartDetailLink').innerHTML = sum;
+    }
+  
+
+</script>
+{% endif %}
 {% endblock %}
