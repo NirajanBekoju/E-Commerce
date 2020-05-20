@@ -4,6 +4,7 @@ Checkout - My Awesome Cart
 {% endblock%}
 
 {% block content %}
+    <!-- row for item list -->
     <div class="row">
         <div class="col-md-12">
             <h3>Step 1: Item List in your Cart</h3>
@@ -12,6 +13,8 @@ Checkout - My Awesome Cart
             </ul>
         </div>
     </div>
+    <!-- end of row for items_list -->
+    <!-- personal-detail -->
     <div class="row">
         <div class="col-md-12 personal-detail" id="personal-detail">
             <h3 class="my-2">Step 2: Fill Up your Personal Details</h3>
@@ -65,6 +68,7 @@ Checkout - My Awesome Cart
             </form>
         </div>
     </div>
+    <!-- end of personal-detail form -->
 {% endblock %}
 
 {% block scriptJs %}
@@ -78,8 +82,8 @@ Checkout - My Awesome Cart
     </script>
 {% else %}
 <script>  
+    // Searching Cart from the localStorage
     var cart = JSON.parse(localStorage.getItem('cart'));
-    console.log(cart);
     // function to overwrite the cart button
     if(cart != null){
         overwrite();

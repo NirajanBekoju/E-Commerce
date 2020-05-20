@@ -34,17 +34,19 @@ def contact(request):
 
 def tracker(request):
     if(request.method == "POST"):
+        # Fetching Data from the tracker form
         order_id = request.POST.get('order-id')
         email = request.POST.get('email')
         try:
+            # Searching gor the order in the "ORDER" table
             order = Order.objects.filter(order_id = order_id, email = email)
+            order_list = [item.items_json for item in order]
             if(len(order) > 0):
                 update = OrderUpdate.objects.filter(order_id = order_id)
                 updates = []
                 for item in update:
                     updates.append({'text':item.order_desc, 'time':item.timeStamp})
-                response = json.dumps(updates, default=str)
-                print(response)
+                response = json.dumps([updates, order_list], default=str)
                 return HttpResponse(response)
             else:
                 pass
@@ -62,6 +64,8 @@ def productView(request, proId):
 def checkout(request):
     delivered_message = ""
     order_id = ""
+    # Form to fill up "ORDERS" Table
+    # Ordering the products with info
     if(request.method == 'POST'):
         items_json = request.POST.get('items_json')
         name = request.POST.get('name')

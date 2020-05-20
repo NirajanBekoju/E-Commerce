@@ -24,7 +24,7 @@
                 </p>
                 <span class="font-weight-bold">Category: </span><span>{{ products.0.category }}</span><br>
                 <span class="font-weight-bold">Sub-Category: </span><span>{{ products.0.sub_category }}</span><br>
-                <span class="font-weight-bold">Price: </span><span>{{ products.0.price }}</span><br>
+                <span class="font-weight-bold">Price: </span><span id="pricepr{{products.0.id}}">{{ products.0.price }}</span><br>
                 <div id="asdfpr{{products.0.id}}" class="asdfpr">
                   <button class="btn btn-primary addToCart text-white" id="pr{{products.0.id}}">
                       Add to the Cart
@@ -51,7 +51,7 @@
               </p>
               <span class="font-weight-bold">Category: </span><span>{{ product.category }}</span><br>
               <span class="font-weight-bold">Sub-Category: </span><span>{{ product.sub_category }}</span><br>
-              <span class="font-weight-bold">Price: </span><span>{{ product.price }}</span><br>
+              <span class="font-weight-bold">Price: </span><span id="pricepr{{product.id}}">{{ product.price }}</span><br>
               <div id="asdfpr{{product.id}}" class="asdfpr">
                 <button class="btn btn-primary addToCart text-white" id="pr{{product.id}}">
                     Add to the Cart
@@ -129,7 +129,7 @@
     // Update items in localStorage as well
     function overwrite(){
       let sum = 0;
-      // console.log(cart);
+      console.log(cart);
       Object.values(cart).forEach(element => {
         sum+=element[0];
       });
@@ -163,10 +163,10 @@
         cart[product_btn_id] = cart[product_btn_id] + 1;
       }
       else{
-        // cart[product_btn_id] = 1;
         var qty = 1;
         var name_product = document.getElementById('name' + product_btn_id).innerHTML;
-        cart[product_btn_id] = [qty, name_product];
+        var rate = document.getElementById('price' + product_btn_id).innerHTML;
+        cart[product_btn_id] = [qty, name_product, parseInt(rate)];
       }
       localStorage.setItem('cart', JSON.stringify(cart));
       // Function to overwrite in the 'Cart' link in NavBar
