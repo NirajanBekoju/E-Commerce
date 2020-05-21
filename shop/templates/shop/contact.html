@@ -42,3 +42,21 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scriptJs %}
+<script>
+    // Searching Cart from the localStorage
+    var cart = JSON.parse(localStorage.getItem('cart'));
+    if(cart != null){
+        overwrite();
+    }
+
+    function overwrite(){
+        let sum = 0
+        Object.values(cart).forEach(element => {
+            sum+=element[0];
+        });
+        document.getElementById('cartDetailLink').innerHTML = sum;
+    }
+</script>
+{% endblock %}

@@ -4,13 +4,28 @@ Checkout - My Awesome Cart
 {% endblock%}
 
 {% block content %}
-    <!-- row for item list -->
     <div class="row">
         <div class="col-md-12">
             <h3>Step 1: Item List in your Cart</h3>
-            <ul class="list-group" id="items_list">
+            <div class="table-responsive-md">
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">SN</th>
+                            <th scope="col">Products</th>
+                            <th scope="col">Rate</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total</th>   
+                        </tr>
+                    </thead>
+                    <tbody id="bill-table">
                 
-            </ul>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-info" role="alert">
+                <b>Total Price : Rs<span id="total-price" class=""></span></b> 
+            </div>
         </div>
     </div>
     <!-- end of row for items_list -->
@@ -75,7 +90,6 @@ Checkout - My Awesome Cart
 
 {% if message %}
     <script>
-        console.log("Apple alle");   
         alert(`Ordered. You can track us with our tracker Tracker Id:{{order_id}}`);
         localStorage.clear();
         window.location = '/shop/';
@@ -86,15 +100,27 @@ Checkout - My Awesome Cart
     var cart = JSON.parse(localStorage.getItem('cart'));
     // function to overwrite the cart button
     if(cart != null){
+        // Function to overwrite cart in Navigation bar;
         overwrite();
+        var sn = 1; // for serial number
+        var sum = 0; // total amount of money 
+        var total;
         for(key in cart){
             if(cart[key][0] !== 0){
-                $('#items_list').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${cart[key][1]}
-                    <span class="badge badge-primary badge-pill">${cart[key][0]}</span>
-                    </li>`);
+                total = cart[key][0] * cart[key][2];
+                $('#bill-table').append(`<tr>
+                            <td scope="col">${sn}</td>
+                            <td scope="col">${cart[key][1]}</td>
+                            <td scope="col">${cart[key][2]}</td>
+                            <td scope="col">${cart[key][0]}</td>
+                            <td scope="col">${total}</td>
+                        </tr>`);
             }
+            sum += total;
+            sn++;
         }
+        $('#total-price').text(sum);
+        console.log(sum);
     }
     else{
         $('#items_list').append("<li>No Items In Cart</li>");

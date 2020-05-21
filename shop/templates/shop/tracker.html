@@ -44,7 +44,7 @@
 
 {% block scriptJs %}
 <script>
-    // AJAX Form submit
+// AJAX Form submit
 $('#trackerForm').submit(function(event){
     $('#items_list').empty();
 
@@ -80,7 +80,26 @@ $('#trackerForm').submit(function(event){
         }     
     });
     event.preventDefault();
-
 });
+// End of AJAX Form submit
+
+// Below script are to overwrite the "Cart" in NavBar
+// Searching Cart from the localStorage
+var cart = JSON.parse(localStorage.getItem('cart'));
+    if(cart != null){
+        overwrite();
+    }
+
+    function overwrite(){
+        let sum = 0
+        Object.values(cart).forEach(element => {
+            sum+=element[0];
+        });
+        document.getElementById('cartDetailLink').innerHTML = sum;
+    }
 </script>
 {% endblock %}
+
+
+
+    
